@@ -12,28 +12,28 @@
 <body>
 <div id="app"  style="padding: 10px;">
   <p>
-    <a href="table.html" class="layui-btn">實時天氣</a>
+    <a href="index.html" class="layui-btn">首頁</a>
     <a href="img1.jpg" class="layui-btn">分區示意圖</a>
   </p>
-  <table class="layui-table" v-for="item in feeds">
+  <table class="layui-table">
     <thead>
-      <tr>
-        <td colspan="2">{{item[0]}} ({{item[9]}})</td>
-      </tr>
-    </thead>
-    <tr><td style="width: 50%;">
-      氣温(°C): {{item[1]}}<br>
-      濕度(%): {{item[2]}}<br>
-      大氣壓(hPa): {{item[3]}}<br>
-      PM25: {{item[4]}}<br>
-    </td>
-    <td style="width: 50%;">
-      UV: {{item[5]}}<br>
-      雨量(mm): {{item[6]}} <br>
-      風速(km/s): {{item[7]}} <br>
-      風向(度): {{item[8]}}<br>
-    </td>
+    <tr>
+      <td>地區</td>
+      <td>温度C</td>
+      <td>濕度%</td>
+      <td>大氣壓hPa</td>
+      <td>PM25</td>
+      <td>UV</td>
+      <td>雨量mm</td>
+      <td>風速km/s</td>
+      <td>風向度</td>
+      <td>更新時間</td>
     </tr>
+    </thead>
+    <tr v-for="item in feeds">
+      <td v-for="n in 10">{{item[n-1]}}</td>
+    </tr>
+
   </table>
 </div>  
 <script>
