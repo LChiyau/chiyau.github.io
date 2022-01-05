@@ -8,17 +8,28 @@
   <script src="https://unpkg.com/vue@3.1.5/dist/vue.global.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css" rel="external nofollow" />
+  <style>
+    .layui-btn
+    {
+     background-color: #255091;
+    }
+  </style>
 </head>
 <body>
 <div id="app"  style="padding: 10px;">
   <p>
-    <a href="table.html" class="layui-btn">實時天氣</a>
-    <a href="img1.jpg" class="layui-btn">分區示意圖</a>
+    <a href="./index.html"  class="layui-btn">首頁</a>
+    <a href="repart24hr.html" class="layui-btn">1天氣候</a>
+    <a href="repart7d.html" class="layui-btn">1週氣候</a>
+    <a href="repart1m.html" class="layui-btn">1個月氣候</a>
+    <a href="area.html" class="layui-btn">分區示意圖</a>
   </p>
   <table class="layui-table" v-for="item in feeds">
     <thead>
       <tr>
-        <td colspan="2">{{item[0]}} ({{item[9]}})</td>
+        <td colspan="2">
+          {{item[0]}} ({{item[9]}}) <br>
+        </td>
       </tr>
     </thead>
     <tr><td style="width: 50%;">
@@ -37,6 +48,8 @@
   </table>
 </div>  
 <script>
+  //https://api.thingspeak.com/channels/1532245/feeds.csv
+  //https://api.thingspeak.com/channels/1532245/feeds.json?start=2021-10-01%2000:00:00&end=2021-10-31%2023:59:59
   const app= Vue.createApp({
     data(){
       return{
@@ -45,16 +58,16 @@
       }
     },
     mounted(){
-      const url= [['聖保祿學校(中學-主)','https://api.thingspeak.com/channels/1096688/feeds.json?results=1'],
-                  ['聖保祿學校(中學-副)','https://api.thingspeak.com/channels/1092665/feeds.json?results=1'],
-                  ['聖保祿學校(小學)','https://api.thingspeak.com/channels/1548229/feeds.json?results=1'],
-                  ['台山區','https://api.thingspeak.com/channels/1532245/feeds.json?results=1'],
-                  ['水塘區','https://api.thingspeak.com/channels/1558075/feeds.json?results=1'],
-                  ['新口岸區','https://api.thingspeak.com/channels/1563960/feeds.json?results=1'],
-                  ['高士德及雅廉訪區','https://api.thingspeak.com/channels/1564358/feeds.json?results=1']]
+      const url= [['聖保祿學校(中學-主)','1096688'],
+                  ['聖保祿學校(中學-副)','1092665'],
+                  ['聖保祿學校(小學)','1548229'],
+                  ['台山區','1532245'],
+                  ['水塘區','1558075'],
+                  ['新口岸區','1563960'],
+                  ['高士德及雅廉訪區','1564358']]
       for(let i=0;i<url.length;i++){
-        axios
-          .get(url[i][1])
+        const urlFeeds= `https://api.thingspeak.com/channels/${url[i][1]}/feeds.json?results=1`
+        axios.get(urlFeeds)
           .then(response =>{
             let d= response.data['feeds'][0]
               if(i==0){
@@ -67,7 +80,8 @@
                   Number(d.field6).toFixed(2),
                   Number(d.field7).toFixed(2),
                   d.field8,
-                  new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})]
+                  new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'}),
+                  url[i][1]]
               }else{
                 this.feeds[i]=[url[i][0],
                   d.field1,
@@ -78,7 +92,8 @@
                   ,
                   ,
                   ,
-                  new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})]
+                  new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'}),
+                  url[i][1]]
               }
               
           })
