@@ -7,29 +7,26 @@
   <title>澳門DIY氣象站</title>
   <script src="https://unpkg.com/vue@3.1.5/dist/vue.global.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <link rel="icon" type="image/png" href="logo.png"/>
-  <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css" rel="external nofollow" />
-  <style>
-    .layui-btn
-    {
-     background-color: #255091;
-    }
-  </style>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body>
-<div id="app"  style="padding: 10px;">
-  <p>
-    <a href="./index.html"  class="layui-btn">首頁</a>
-    <a href="repart24hr.html" class="layui-btn">1天氣候</a>
-    <a href="repart7d.html" class="layui-btn">1週氣候</a>
-    <a href="repart1m.html" class="layui-btn">1個月氣候</a>
-    <a href="area.html" class="layui-btn">分區示意圖</a>
-  </p>
-  <table class="layui-table" v-for="item in feeds">
+<div class="w3-top">
+<div class="w3-bar w3-light-grey" style="margin:0px auto;">
+  <a href="index.html" class="w3-bar-item w3-button w3-green">首頁<br>&nbsp</a>
+  <a href="repart1d.html" class="w3-bar-item w3-button">1天<br>氣候</a>
+  <a href="repart7d.html" class="w3-bar-item w3-button">1週<br>氣候</a>
+  <a href="repart1m.html" class="w3-bar-item w3-button">1個月<br>氣候</a>
+  <a href="area.html" class="w3-bar-item w3-button">分區<br>圖</a>
+  <a href="download.html" class="w3-bar-item w3-button">下載<br>App</a>
+</div>
+</div>
+<div id="app" class="w3-container w3-margin w3-padding-64">
+  <table class="w3-table-all w3-margin-bottom" v-for="item in feeds">
     <thead>
       <tr>
         <td colspan="2">
           {{item[0]}} ({{item[9]}}) <br>
+          <a v-for="n in ['10','11','12']" :href=`https://api.thingspeak.com/channels/${item[10]}/feeds.csv?start=2021-${n}-01%2000:00:00&end=2021-${n}-31%2023:59:59`>2021/{{n}}數據,</a>
         </td>
       </tr>
     </thead>
@@ -39,7 +36,7 @@
       大氣壓(hPa): {{item[3]}}<br>
       PM25: {{item[4]}}<br>
     </td>
-    <td style="width: 50%;">
+    <td  style="width: 50%;">
       UV: {{item[5]}}<br>
       雨量(mm): {{item[6]}} <br>
       風速(km/s): {{item[7]}} <br>
