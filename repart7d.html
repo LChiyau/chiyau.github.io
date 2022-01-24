@@ -1,92 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>澳門DIY氣象站</title>
   <script src="https://unpkg.com/vue@3.1.5/dist/vue.global.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
-  <link rel="icon" type="image/png" href="logo.png"/>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>
+    .chart {
+      height: 200px;
+      width: 100%;
+    }
+
+    @media screen and (min-width:600px) {
+      .chart {
+        height: 300px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="w3-bar w3-light-grey">
-  <a href="index.html" class="w3-bar-item w3-button">首頁<br>&nbsp</a>
-  <a href="repart1d.html" class="w3-bar-item w3-button">1天<br>氣候</a>
-  <a href="repart7d.html" class="w3-bar-item w3-button w3-green">1週<br>氣候</a>
-  <a href="repart1m.html" class="w3-bar-item w3-button">1個月<br>氣候</a>
-  <a href="area.html" class="w3-bar-item w3-button">分區<br>圖</a>
-  <a href="download.html" class="w3-bar-item w3-button">下載<br>App</a>
-</div>
-<div id="app" class="w3-container w3-margin">
-    <p>
-    站點:
-    <select @change="onChange($event)">
-      <option value="1096688">聖保祿學校(中學-主)</option>
-      <option value="1092665">聖保祿學校(中學-副)</option>
-      <option value="1548229">聖保祿學校(小學)</option>
-      <option value="1532245">台山區</option>
-      <option value="1558075">水塘區</option>
-      <option value="1563960">新口岸區</option>
-      <option value="1564358">高士德及雅廉訪區</option>
-    </select>
-    </p>
-    <div id="chart1" style="width: 95%;height:250px;"></div>
-    <div id="chart2" style="width: 95%;height:250px;"></div>
+  <div>
+    <a href="index.html" class=" w3-button w3-round-xlarge w3-light-grey">首頁</a>
+    <a href="repart1d.html" class="w3-button w3-round-xlarge w3-green">天氣報告</a>
+    <a href="area.html" class="w3-button w3-round-xlarge w3-light-grey">分區圖</a>
+    <a href="download.html" class="w3-button w3-round-xlarge w3-light-grey">下載</a>
   </div>
 
-<script>
-  //https://api.thingspeak.com/channels/1532245/feeds.json?days=1
-  function markChart(title,channelID,fieldID,divID){
-    axios.get(`https://api.thingspeak.com/channels/${channelID}/fields/${fieldID}.json?days=7`)
-      .then(response =>{
-        let d= response.data['feeds']
-        let xData= []
-        let yData= []
-        for(let i=0;i<d.length;i++){
-          const dt=new Date(d[i]['created_at'])
-          const formatted = `${dt.getMonth()+1}/${dt.getDate()},${dt.getHours()}:${dt.getMinutes()}`
-          xData.push(formatted)
-          yData.push(d[i][`field${fieldID}`])
-        }
-        const myChart= echarts.init(document.getElementById(divID))
-        const option={
-            title:{text: title},
-            xAxis: {type: 'category',data: xData},
-            yAxis: {type: 'value'},
+  <div id="app" class="w3-container w3-margin">
+    <div class="w3-bar w3-black w3-round-xlarge">
+      <a href="repart1d.html" class="w3-bar-item w3-button">1天</a>
+      <a href="repart7d.html" class="w3-bar-item w3-button w3-green">1週</a>
+      <a href="repart1m.html" class="w3-bar-item w3-button">1個月</a>
+      <a href="shareData.html" class="w3-bar-item w3-button">共享數據</a>
+    </div>
+
+    <p>
+      站點:
+      <select v-model="channelID" @change="onChange">
+        <option value="1096688,聖保祿學校-中學主">聖保祿學校-中學主</option>
+        <option value="1092665,聖保祿學校-中學副">聖保祿學校-中學副</option>
+        <option value="1548229,聖保祿學校-小學">聖保祿學校-小學</option>
+        <option value="1532245,台山區">台山區</option>
+        <option value="1558075,水塘區">水塘區</option>
+        <option value="1563960,新口岸區">新口岸區</option>
+        <option value="1564358,高士德及雅廉訪區">高士德及雅廉訪區</option>
+      </select>
+    </p>
+    <div id="chart1" class="chart"></div>
+    <div id="chart2" class="chart"></div>
+  </div>
+
+  <script>
+    //https://api.thingspeak.com/channels/1532245/feeds.json?days=1
+    function markChart(title, channelID, fieldID, divID) {
+      axios.get(`https://api.thingspeak.com/channels/${channelID}/fields/${fieldID}.json?days=7`)
+        .then(response => {
+          let d = response.data['feeds']
+          let xData = []
+          let yData = []
+          for (let i = 0; i < d.length; i++) {
+            const dt = new Date(d[i]['created_at'])
+            const formatted = `${dt.getMonth()+1}/${dt.getDate()},${dt.getHours()}:${dt.getMinutes()}`
+            xData.push(formatted)
+            yData.push(d[i][`field${fieldID}`])
+          }
+          const myChart = echarts.init(document.getElementById(divID))
+          const option = {
+            title: {
+              text: title
+            },
+            xAxis: {
+              type: 'category',
+              data: xData,
+              axisLabel: {
+                rotate: -20
+              }
+            },
+            yAxis: {
+              type: 'value'
+            },
             series: [{
-              data: yData,type: 'line',
+              data: yData,
+              type: 'line',
               markPoint: {
-                data: [{ type: 'max', name: 'Max' },
-                  { type: 'min', name: 'Min' }]}
-              }]
+                data: [{
+                    type: 'max',
+                    name: '最大值:'
+                  },
+                  {
+                    type: 'min',
+                    name: '最小值:'
+                  },
+                  {
+                    type: 'average',
+                    name: '平均值:'
+                  }
+                ],
+                label: {
+                  normal: {
+                    formatter: function (params, ticket, callback) {
+                      return params.name + params.value;;
+                    }
+                  }
+                }
+              },
+            }]
+          }
+          myChart.setOption(option)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
+
+    markChart('聖保祿學校(中學-主)-氣温°C', '1096688', '1', 'chart1')
+    markChart('聖保祿學校(中學-主)-濕度%', '1096688', '2', 'chart2')
+
+    const app = Vue.createApp({
+      data() {
+        return {
+          feeds: [],
+          channelID: '1096688,聖保祿學校-中學主',
         }
-        myChart.setOption(option)
-      })
-      .catch(function(error){console.log(error)})
-  }
-
-  markChart('聖保祿學校(中學-主)-氣温°C','1096688','1','chart1')
-  markChart('聖保祿學校(中學-主)-濕度%','1096688','2','chart2')
-
-  const app= Vue.createApp({
-    data(){
-      return{
-        feeds: [],
-      }
-    },
-    methods: {
-      onChange(e){
-        const name= e.target.options[e.target.options.selectedIndex].text
-        const value= e.target.value
-        markChart(`${name}-氣温°C`,value,'1','chart1')
-        markChart(`${name}-濕度%`,value,'2','chart2')
-      }
-    },
-  })
-  app.mount('#app')
-</script>
+      },
+      methods: {
+        onChange() {
+          const str = this.channelID.split(",")
+          const channel = str[0]
+          const site = str[1]
+          markChart(`${site}-氣温°C`, channel, '1', 'chart1')
+          markChart(`${site}-濕度%`, channel, '2', 'chart2')
+        }
+      },
+      mounted() {
+        this.onChange()
+      },
+    })
+    app.mount('#app')
+  </script>
 </body>
+
 </html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>澳門DIY氣象站</title>
+  <script src="https://unpkg.com/vue@3.1.5/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body>
+
+</body>
+<div>
+  <a href="index.html" class=" w3-button w3-round-xlarge w3-light-grey">首頁</a>
+  <a href="repart1d.html" class="w3-button w3-round-xlarge w3-green">天氣報告</a>
+  <a href="area.html" class="w3-button w3-round-xlarge w3-light-grey">分區圖</a>
+  <a href="download.html" class="w3-button w3-round-xlarge w3-light-grey">下載</a>
+</div>
+<div id="app" class="w3-container w3-margin">
+  <div class="w3-bar w3-black w3-round-xlarge">
+    <a href="repart1d.html" class="w3-bar-item w3-button">1天</a>
+    <a href="repart7d.html" class="w3-bar-item w3-button">1週</a>
+    <a href="repart1m.html" class="w3-bar-item w3-button">1個月</a>
+    <a href="shareData.html" class="w3-bar-item w3-button  w3-green">共享數據</a>
+  </div>
+
+  <br>
+
+  <table class="w3-table-all  w3-center" style="width: 350px">
+    <tr v-for="item in url">
+      <td style="width: 100px;">{{item[0]}}</td>
+      <td>
+        <a
+          :href="`https://api.thingspeak.com/channels/${item[1]}/feeds.csv?start=2021-09-30%2016:00:00&end=2021-10-31%2016:00:00`">2021-10
+        </a>&nbsp
+        <a
+          :href="`
+          https://api.thingspeak.com/channels/${item[1]}/feeds.csv?start=2021-10-31%2016:00:00&end=2021-11-30%2016:00:00`">2021-11
+        </a>&nbsp
+        <a
+          :href="`https://api.thingspeak.com/channels/${item[1]}/feeds.csv?start=2021-11-30%2016:00:00&end=2021-12-31%2016:00:00`">2021-12</a>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+        url: [
+          ['聖保祿學校-中學主', '1096688'],
+          ['聖保祿學校-中學副', '1092665'],
+          ['聖保祿學校-小學', '1548229'],
+          ['台山區', '1532245'],
+          ['水塘區', '1558075'],
+          ['新口岸區', '1563960'],
+          ['高士德及雅廉訪區', '1564358']
+        ],
+      }
+    },
+  })
+  app.mount('#app')
+</script>
+
+</html>

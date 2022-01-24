@@ -1,76 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>澳門DIY氣象站</title>
   <script src="https://unpkg.com/vue@3.1.5/dist/vue.global.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <link rel="icon" type="image/png" href="logo.png"/>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
+
 <body>
-<div class="w3-top">
-<div class="w3-bar w3-light-grey" style="margin:0px auto;">
-  <a href="index.html" class="w3-bar-item w3-button w3-green">首頁<br>&nbsp</a>
-  <a href="repart1d.html" class="w3-bar-item w3-button">1天<br>氣候</a>
-  <a href="repart7d.html" class="w3-bar-item w3-button">1週<br>氣候</a>
-  <a href="repart1m.html" class="w3-bar-item w3-button">1個月<br>氣候</a>
-  <a href="area.html" class="w3-bar-item w3-button">分區<br>圖</a>
-  <a href="download.html" class="w3-bar-item w3-button">下載<br>App</a>
-</div>
-</div>
-<div id="app" class="w3-container w3-margin w3-padding-64">
-  <table class="w3-table-all w3-margin-bottom" v-for="item in feeds">
-    <thead>
-      <tr>
-        <td colspan="2">
-          {{item[0]}} ({{item[9]}}) <br>
-          <a v-for="n in ['10','11','12']" :href=`https://api.thingspeak.com/channels/${item[10]}/feeds.csv?start=2021-${n}-01%2000:00:00&end=2021-${n}-31%2023:59:59`>2021/{{n}}數據,</a>
-        </td>
-      </tr>
-    </thead>
-    <tr><td style="width: 50%;">
-      氣温(°C): {{item[1]}}<br>
-      濕度(%): {{item[2]}}<br>
-      大氣壓(hPa): {{item[3]}}<br>
-      PM2.5(µg/m³): {{item[4]}}<br>
-    </td>
-    <td  style="width: 50%;">
-      UV: {{item[5]}}<br>
-      雨量(mm): {{item[6]}} <br>
-      風速(km/h): {{item[7]}} <br>
-      風向(度): {{item[8]}}<br>
-    </td>
-    </tr>
-  </table>
-</div>  
-<script>
-  //https://api.thingspeak.com/channels/1532245/feeds.csv
-  //https://api.thingspeak.com/channels/1532245/feeds.json?start=2021-10-01%2000:00:00&end=2021-10-31%2023:59:59
-  const app= Vue.createApp({
-    data(){
-      return{
-        feeds: [],
-        
-      }
-    },
-    mounted(){
-      const url= [['聖保祿學校(中學-主)','1096688'],
-                  ['聖保祿學校(中學-副)','1092665'],
-                  ['聖保祿學校(小學)','1548229'],
-                  ['台山區','1532245'],
-                  ['水塘區','1558075'],
-                  ['新口岸區','1563960'],
-                  ['高士德及雅廉訪區','1564358']]
-      for(let i=0;i<url.length;i++){
-        const urlFeeds= `https://api.thingspeak.com/channels/${url[i][1]}/feeds.json?results=1`
-        axios.get(urlFeeds)
-          .then(response =>{
-            let d= response.data['feeds'][0]
-              if(i==0){
-                this.feeds[i]=[url[i][0],
+
+  <div class="w3-top">
+    <a href="index.html" class=" w3-button w3-round-xlarge w3-green">首頁</a>
+    <a href="repart1d.html" class="w3-button w3-round-xlarge w3-light-grey">天氣報告</a>
+    <a href="area.html" class="w3-button w3-round-xlarge w3-light-grey">分區圖</a>
+    <a href="download.html" class="w3-button w3-round-xlarge w3-light-grey">下載</a>
+  </div>
+
+  <div id="app" class="w3-container" style="padding: 48px 12px;">
+    <div class="w3-container w3-green w3-round-xlarge w3-margin-bottom" v-for="item in feeds">
+      <p>{{item[0]}}-{{item[9]}}</p>
+      <div style="float:left;width: 50%;"> 氣温(°C): {{item[1]}}<br>
+        濕度(%): {{item[2]}}<br>
+        大氣壓(hPa): {{item[3]}}<br>
+        PM2.5: {{item[4]}}<br><br></div>
+      <div style="float: right;width: 50%;"> UV: {{item[5]}}<br>
+        雨量(mm): {{item[6]}} <br>
+        風速(km/h): {{item[7]}} <br>
+        風向(度): {{item[8]}}<br></div>
+    </div>
+  </div>
+  <script>
+    //https://api.thingspeak.com/channels/1532245/feeds.csv
+    //https://api.thingspeak.com/channels/1532245/feeds.json?start=2021-10-01%2000:00:00&end=2021-10-31%2023:59:59
+    const app = Vue.createApp({
+      data() {
+        return {
+          feeds: [],
+
+        }
+      },
+      mounted() {
+        axios.get(
+            'https://script.googleusercontent.com/macros/echo?user_content_key=F_yKFPjVLtPzGzwQvqkXK984ZZCMnYq6LTGDxD3j9K-Q6QN57lRMI_K51LvMScLWAgpkUX93f1V_8H8A9vmbbjcU1X4CSZ1Dm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnGtLtHXXwv5QAmWE1cLm1rc06TzlLAftKADS3YBAbgf4fxw0vpOMio2op98n2M-qgNSn9qMa6kP9ibZ2QMqSOp7RyQbGQDSmAuw6dV5UNhFmCOmxomFQjgg&lib=MF2V-6kl9Mltnpg8fJqbraWRV0EIv_IcN'
+          )
+          .then(response => {
+            let d = response.data
+            this.feeds[0] = [`${d.site}-澳門氣象局`,
+              d.temp, d.humi, , , , d.Rainfall, d.windSpeed, d.windDir,
+              new Date(Date.parse(d.updateTime)).toLocaleString('zh-TW', {
+                timeZone: 'Asia/Taipei'
+              })
+            ]
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+
+        const url = [
+          ['聖保祿學校-中學主', '1096688'],
+          ['聖保祿學校-中學副', '1092665'],
+          ['聖保祿學校-小學', '1548229'],
+          ['台山區', '1532245'],
+          ['水塘區', '1558075'],
+          ['新口岸區', '1563960'],
+          ['高士德及雅廉訪區', '1564358']
+        ]
+        for (let i = 0; i < url.length; i++) {
+          const urlFeeds = `https://api.thingspeak.com/channels/${url[i][1]}/feeds.json?results=1`
+          axios.get(urlFeeds)
+            .then(response => {
+              let d = response.data['feeds'][0]
+              if (i == 0) {
+                this.feeds[i + 1] = [url[i][0],
                   d.field1,
                   Number(d.field2).toFixed(2),
                   Number(d.field3).toFixed(2),
@@ -79,28 +84,32 @@
                   Number(d.field6).toFixed(2),
                   Number(d.field7).toFixed(2),
                   d.field8,
-                  new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'}),
-                  url[i][1]]
-              }else{
-                this.feeds[i]=[url[i][0],
+                  new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {
+                    timeZone: 'Asia/Taipei'
+                  }),
+                  url[i][1]
+                ]
+              } else {
+                this.feeds[i + 1] = [url[i][0],
                   d.field1,
                   Number(d.field2).toFixed(2),
-                  Number(d.field3).toFixed(2),
-                  ,
-                  ,
-                  ,
-                  ,
-                  ,
-                  new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'}),
-                  url[i][1]]
+                  Number(d.field3).toFixed(2), , , , , ,
+                  new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {
+                    timeZone: 'Asia/Taipei'
+                  }),
+                  url[i][1]
+                ]
               }
-              
-          })
-          .catch(function(error){console.log(error)})
-      }
-    },
-  })
-  app.mount('#app')
-</script>
+
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+        }
+      },
+    })
+    app.mount('#app')
+  </script>
 </body>
+
 </html>
