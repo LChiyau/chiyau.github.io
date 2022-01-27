@@ -23,10 +23,10 @@
   <div id="app" class="w3-container" style="padding: 48px 12px;">
     <div class="w3-container w3-green w3-round-xlarge w3-margin-bottom" v-for="item in feeds">
       <p>{{item[0]}}-{{item[9]}}</p>
-      <div style="float:left;width: 50%;"> 氣温(°C): {{item[1]}}<br>
+        <div style="float:left;width: 50%;"> 氣温(°C): {{item[1]}}<br>
         濕度(%): {{item[2]}}<br>
         大氣壓(hPa): {{item[3]}}<br>
-        PM2.5: {{item[4]}}<br><br></div>
+        PM2.5(μg/m³): {{item[4]}}<br><br></div>
       <div style="float: right;width: 50%;"> UV: {{item[5]}}<br>
         雨量(mm): {{item[6]}} <br>
         風速(km/h): {{item[7]}} <br>
