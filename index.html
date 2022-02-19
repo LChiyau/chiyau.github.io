@@ -23,10 +23,10 @@
   <div id="app" class="w3-container" style="padding: 48px 12px;">
     <div class="w3-container w3-green w3-round-xlarge w3-margin-bottom" v-for="item in feeds">
       <p>{{item[0]}}-{{item[9]}}</p>
-        <div style="float:left;width: 50%;"> 氣温(°C): {{item[1]}}<br>
+      <div style="float:left;width: 50%;"> 氣温(°C): {{item[1]}}<br>
         濕度(%): {{item[2]}}<br>
         大氣壓(hPa): {{item[3]}}<br>
-        PM2.5(μg/m³): {{item[4]}}<br><br></div>
+        PM25: {{item[4]}}<br><br></div>
       <div style="float: right;width: 50%;"> UV: {{item[5]}}<br>
         雨量(mm): {{item[6]}} <br>
         風速(km/h): {{item[7]}} <br>
@@ -44,23 +44,8 @@
         }
       },
       mounted() {
-        axios.get(
-            'https://script.googleusercontent.com/macros/echo?user_content_key=F_yKFPjVLtPzGzwQvqkXK984ZZCMnYq6LTGDxD3j9K-Q6QN57lRMI_K51LvMScLWAgpkUX93f1V_8H8A9vmbbjcU1X4CSZ1Dm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnGtLtHXXwv5QAmWE1cLm1rc06TzlLAftKADS3YBAbgf4fxw0vpOMio2op98n2M-qgNSn9qMa6kP9ibZ2QMqSOp7RyQbGQDSmAuw6dV5UNhFmCOmxomFQjgg&lib=MF2V-6kl9Mltnpg8fJqbraWRV0EIv_IcN'
-          )
-          .then(response => {
-            let d = response.data
-            this.feeds[0] = [`${d.site}-澳門氣象局`,
-              d.temp, d.humi, , , , d.Rainfall, d.windSpeed, d.windDir,
-              new Date(Date.parse(d.updateTime)).toLocaleString('zh-TW', {
-                timeZone: 'Asia/Taipei'
-              })
-            ]
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-
         const url = [
+          ['大潭山-澳門氣象局', '1557967'],
           ['聖保祿學校-中學主', '1096688'],
           ['聖保祿學校-中學副', '1092665'],
           ['聖保祿學校-小學', '1548229'],
@@ -74,33 +59,20 @@
           axios.get(urlFeeds)
             .then(response => {
               let d = response.data['feeds'][0]
-              if (i == 0) {
-                this.feeds[i + 1] = [url[i][0],
-                  d.field1,
-                  Number(d.field2).toFixed(2),
-                  Number(d.field3).toFixed(2),
-                  Number(d.field4).toFixed(2),
-                  Number(d.field5).toFixed(2),
-                  Number(d.field6).toFixed(2),
-                  Number(d.field7).toFixed(2),
-                  d.field8,
-                  new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {
-                    timeZone: 'Asia/Taipei'
-                  }),
-                  url[i][1]
-                ]
-              } else {
-                this.feeds[i + 1] = [url[i][0],
-                  d.field1,
-                  Number(d.field2).toFixed(2),
-                  Number(d.field3).toFixed(2), , , , , ,
-                  new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {
-                    timeZone: 'Asia/Taipei'
-                  }),
-                  url[i][1]
-                ]
-              }
-
+              this.feeds[i] = [url[i][0],
+                d.field1,
+                d.field2,
+                d.field3,
+                d.field4,
+                d.field5,
+                d.field6,
+                d.field7,
+                d.field8,
+                new Date(Date.parse(d.created_at)).toLocaleString('zh-TW', {
+                  timeZone: 'Asia/Taipei'
+                }),
+                url[i][1]
+              ]
             })
             .catch(function (error) {
               console.log(error)
